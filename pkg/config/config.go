@@ -46,8 +46,8 @@ type Rest struct {
 	TLS  struct {
 		Enable bool `envconfig:"enable" default:"false"`
 		Server struct {
-			CertFile string `envconfig:"cert_file"`
-			KeyFile  string `envconfig:"key_file"`
+			CertPath string `envconfig:"cert_path"`
+			KeyPath  string `envconfig:"key_path"`
 		} `envconfig:"server"`
 	} `envconfig:"tls"`
 }
@@ -61,9 +61,11 @@ type Metrics struct {
 	Host string `envconfig:"host" default:""`
 	Port string `envconfig:"port"    default:"9090"`
 	TLS  struct {
-		Enable   bool   `envconfig:"enable" default:"false"`
-		CertFile string `envconfig:"cert_file"`
-		KeyFile  string `envconfig:"key_file"`
+		Enable bool `envconfig:"enable" default:"false"`
+		Server struct {
+			CertPath string `envconfig:"cert_path"`
+			KeyPath  string `envconfig:"key_path"`
+		} `envconfig:"server"`
 	} `envconfig:"tls"`
 }
 

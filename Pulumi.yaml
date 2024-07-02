@@ -1,0 +1,10 @@
+name: go-api
+runtime:
+  name: nodejs
+  options:
+    packagemanager: npm
+description: Example API service in Go
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: typescript

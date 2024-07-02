@@ -95,8 +95,8 @@ func startMetricsServer(_ context.Context) error {
 	if cfg.Telemetry.Metrics.TLS.Enable {
 		if err := engine.RunTLS(
 			metricsAddress,
-			cfg.Telemetry.Metrics.TLS.CertFile,
-			cfg.Telemetry.Metrics.TLS.KeyFile,
+			cfg.Telemetry.Metrics.TLS.Server.CertPath,
+			cfg.Telemetry.Metrics.TLS.Server.KeyPath,
 		); err != nil {
 			return fmt.Errorf("failed to start secured metrics server, %s", err)
 		}

@@ -42,8 +42,8 @@ func (r *Rest) Run() error {
 	if cfg.API.Rest.TLS.Enable {
 		return r.Engine.RunTLS(
 			net.JoinHostPort(cfg.API.Rest.Host, cfg.API.Rest.Port),
-			cfg.API.Rest.TLS.Server.CertFile,
-			cfg.API.Rest.TLS.Server.KeyFile,
+			cfg.API.Rest.TLS.Server.CertPath,
+			cfg.API.Rest.TLS.Server.KeyPath,
 		)
 	}
 	return r.Engine.Run(net.JoinHostPort(cfg.API.Rest.Host, cfg.API.Rest.Port))
