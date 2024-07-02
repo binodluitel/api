@@ -8,8 +8,10 @@ import (
 	restapi "github.com/binodluitel/api/pkg/api/rest"
 	"github.com/binodluitel/api/pkg/config"
 	"github.com/binodluitel/api/pkg/log"
+	apimetrics "github.com/binodluitel/api/pkg/metrics"
 	restservice "github.com/binodluitel/api/pkg/service/rest"
 	"github.com/gin-gonic/gin"
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
@@ -35,6 +37,17 @@ func main() {
 		zap.String("ref_name", cfg.Application.Git.RefName),
 		zap.String("ref_sha", cfg.Application.Git.RefSHA),
 	}...).Debug("Application build information")
+
+	// Add build information to metrics
+	apimetrics.BuildInfo.With(prometheus.Labels{
+		"build_time":   cfg.Application.BuildTime,
+		"version":      cfg.Application.Version,
+		"git_ref_name": cfg.Application.Git.RefName,
+		"git_ref_sha":  cfg.Application.Git.RefSHA,
+	}).Set(1)
+	if err := apimetrics.RegisterTo(prometheus.DefaultRegisterer); err != nil {
+		logger.Panic(fmt.Sprintf("failed to register metrics, %s", err))
+	}
 
 	// Start Servers
 	// ----------------------------------------------------------------------------------------

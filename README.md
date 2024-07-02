@@ -1,6 +1,6 @@
 # API service example
 
-This is an example of a simple API service application written in Go using version v1.22.
+This is an example of a simple API service application written in Go.
 
 ## All REST verbs for / (Base) URL will return 418 (I'm a teapot) status code.
 
