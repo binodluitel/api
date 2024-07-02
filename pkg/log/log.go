@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 
+	"github.com/binodluitel/api/pkg/config"
 	"go.opentelemetry.io/otel"
 	oteltrace "go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
@@ -17,13 +18,8 @@ const ContextLogger ContextLoggerKey = "ContextLogger"
 
 // Logging constants and defaults
 const (
-	EnvLevel             = "LOG_LEVEL"
-	EnvDevelopment       = "LOG_DEVELOPMENT"
-	EnvEncoding          = "LOG_ENCODING"
-	EnvTracerName        = "LOG_TRACER_NAME"
-	SamplingInitial      = 100
-	SamplingThereafter   = 100
-	UnknownLogTracerName = "unknown-log-tracer"
+	SamplingInitial    = 100
+	SamplingThereafter = 100
 )
 
 // trace for tracer to play tandem with logger
@@ -41,39 +37,31 @@ type Logger struct {
 func New(_ context.Context, opts ...zap.Option) (Logger, error) {
 	// set env vars defaults to prod config if they are not set
 	logConfig := zap.NewProductionConfig()
-	if os.Getenv(EnvLevel) == "" {
-		if err := os.Setenv(EnvLevel, logConfig.Level.String()); err != nil {
-			panic(err.Error())
-		}
+	cfg := config.MustGet()
+	logLevel := cfg.Log.Level
+	if logLevel == "" {
+		logLevel = logConfig.Level.String()
 	}
-
-	if os.Getenv(EnvEncoding) == "" {
-		if err := os.Setenv(EnvEncoding, logConfig.Encoding); err != nil {
-			panic(err.Error())
-		}
-	}
-
-	if os.Getenv(EnvTracerName) == "" {
-		if err := os.Setenv(EnvTracerName, UnknownLogTracerName); err != nil {
-			panic(err.Error())
-		}
-	}
-
-	level, err := zap.ParseAtomicLevel(os.Getenv(EnvLevel))
+	level, err := zap.ParseAtomicLevel(logLevel)
 	if err != nil {
 		return Logger{}, err
+	}
+
+	logEncoding := cfg.Log.Encoding
+	if logEncoding == "" {
+		logEncoding = logConfig.Encoding
 	}
 
 	// Start with production encoder and update as required
 	encoderConfig := zap.NewProductionEncoderConfig()
 	zapConfig := zap.Config{
 		Level:       level,
-		Development: os.Getenv(EnvDevelopment) == "true",
+		Development: cfg.Log.Development,
 		Sampling: &zap.SamplingConfig{
 			Initial:    SamplingInitial,
 			Thereafter: SamplingThereafter,
 		},
-		Encoding:         os.Getenv(EnvEncoding),
+		Encoding:         logEncoding,
 		EncoderConfig:    encoderConfig,
 		OutputPaths:      []string{"stderr"},
 		ErrorOutputPaths: []string{"stderr"},
@@ -92,7 +80,6 @@ func Get(ctx context.Context, opts ...zap.Option) (context.Context, Logger) {
 	if logger, ok := ctx.Value(ContextLogger).(Logger); ok {
 		return ctx, logger
 	}
-	// Create and return new logger
 	logger, err := New(ctx, opts...)
 	if err != nil {
 		panic(err.Error())
@@ -103,7 +90,11 @@ func Get(ctx context.Context, opts ...zap.Option) (context.Context, Logger) {
 
 // WithTrace returns a logger with trace span initialized with an operation name
 func WithTrace(ctx context.Context, operation string) (context.Context, Logger) {
-	ctx, span := otel.Tracer(os.Getenv(EnvTracerName)).Start(ctx, operation)
+	tracerName := config.MustGet().Log.TracerName
+	if tracerName == "" {
+		tracerName = "unknown-log-tracer"
+	}
+	ctx, span := otel.Tracer(os.Getenv(tracerName)).Start(ctx, operation)
 	ctx, logger := Get(ctx)
 	logger.trace.span = span
 	return ctx, logger

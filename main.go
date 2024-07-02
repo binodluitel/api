@@ -18,23 +18,23 @@ import (
 func main() {
 	ctx := context.Background()
 	group, ctx := errgroup.WithContext(ctx)
+	// Initialize Application Configurations
+	// ----------------------------------------------------------------------------------------
+	cfg, err := config.Get()
+	if err != nil {
+		panic(fmt.Sprintf("failed initializing API application configuration, %s", err))
+	}
+
 	_, logger := log.Get(ctx)
 	defer logger.Sync()
 	logger.Info(" ----- Welcome to the API service example ----- ")
 	logger.With([]zap.Field{
-		zap.String("name", config.MustGet().Application.Name),
-		zap.String("version", config.MustGet().Application.Version),
-		zap.String("build_time", config.MustGet().Application.BuildTime),
-		zap.String("ref_name", config.MustGet().Application.Git.RefName),
-		zap.String("ref_sha", config.MustGet().Application.Git.RefSHA),
+		zap.String("name", cfg.Application.Name),
+		zap.String("version", cfg.Application.Version),
+		zap.String("build_time", cfg.Application.BuildTime),
+		zap.String("ref_name", cfg.Application.Git.RefName),
+		zap.String("ref_sha", cfg.Application.Git.RefSHA),
 	}...).Debug("Application build information")
-
-	// Initialize Application Configurations
-	// ----------------------------------------------------------------------------------------
-	_, err := config.Get()
-	if err != nil {
-		logger.Panic(fmt.Sprintf("failed initializing API application configuration, %s", err))
-	}
 
 	// Start Servers
 	// ----------------------------------------------------------------------------------------

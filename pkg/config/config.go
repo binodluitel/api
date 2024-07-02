@@ -15,6 +15,7 @@ type Config struct {
 	API         struct {
 		Rest *Rest `envconfig:"rest"`
 	} `envconfig:"api"`
+	Log       Log       `envconfig:"log"`
 	Telemetry Telemetry `envconfig:"telemetry"`
 }
 
@@ -27,6 +28,14 @@ type Application struct {
 		RefName string `envconfig:"ref_name"`
 		RefSHA  string `envconfig:"ref_sha"`
 	} `envconfig:"git"`
+}
+
+// Log is configuration information for application language
+type Log struct {
+	Level       string `envconfig:"level" default:"debug"`
+	Development bool   `envconfig:"development" default:"true"`
+	Encoding    string `envconfig:"encoding" default:"json"`
+	TracerName  string `envconfig:"tracer_name" default:"unknown-log-tracer"`
 }
 
 // Rest is REST api configuration
