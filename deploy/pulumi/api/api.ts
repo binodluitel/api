@@ -27,7 +27,7 @@ export interface APIArgs {
 const defaultAPIArgs: Partial<APIArgs> = {
   command: ["/bin/api"],
   imageName: "api",
-  imageRepository: "",
+  imageRepository: "bluitel",
   imageTag: "latest",
   imagePullPolicy: "Always",
   port: 8080,

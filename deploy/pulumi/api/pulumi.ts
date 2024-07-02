@@ -35,7 +35,11 @@ const apiArgs = {
   envs: config.getObject<k8s.types.input.core.v1.EnvVar[]>("envs") ?? [],
   name: appName,
   namespace: namespace.metadata.name,
-  imageTag: config.get("imageTag") ?? "latest",
+  imageName: config.get("imageName"),
+  imageRepository: config.get("imageRepository"),
+  imageTag: config.get("imageTag"),
+  imagePullPolicy: config.get("imagePullPolicy"),
+  replicas: config.getNumber("replicas"),
   serviceAccountName: serviceAccount.metadata.name,
 } as api.APIArgs;
 

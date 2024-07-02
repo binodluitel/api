@@ -32,11 +32,10 @@ vet: ## Run go vet against code.
 	go vet ./...
 
 # Image name and tag
-IMG ?= api:latest
+IMG ?= bluitel/api:latest
 
 # If you wish built an image targeting other platforms you can use the --platform flag.
 # i.e. docker build --platform linux/arm64
-# However, you must enable docker buildKit for it.
 # More info: https://docs.docker.com/develop/develop-images/build_enhancements/
 .PHONY: image
 image: ## Build docker image.
@@ -48,4 +47,5 @@ image: ## Build docker image.
 		--build-arg GIT_REF_NAME=${GIT_BRANCH} \
 		--build-arg GIT_REF_SHA=${GIT_COMMIT} \
 		--build-arg VERSION=${GIT_TAG} \
+		--platform=linux/arm64 \
 		-t ${IMG} .

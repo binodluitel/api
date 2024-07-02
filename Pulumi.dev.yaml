@@ -3,7 +3,7 @@ config:
   api:name: api
   api:namespace: api
   api:imageName: "api"
-  api:imageRepository: ""
+  api:imageRepository: "bluitel"
   api:imageTag: "latest"
   api:imagePullPolicy: "Always"
   api:replicas: "3"
