@@ -11,6 +11,7 @@ import (
 	restservice "github.com/binodluitel/api/pkg/service/rest"
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -20,6 +21,13 @@ func main() {
 	_, logger := log.Get(ctx)
 	defer logger.Sync()
 	logger.Info(" ----- Welcome to the API service example ----- ")
+	logger.With([]zap.Field{
+		zap.String("name", config.MustGet().Application.Name),
+		zap.String("version", config.MustGet().Application.Version),
+		zap.String("build_time", config.MustGet().Application.BuildTime),
+		zap.String("ref_name", config.MustGet().Application.Git.RefName),
+		zap.String("ref_sha", config.MustGet().Application.Git.RefSHA),
+	}...).Debug("Application build information")
 
 	// Initialize Application Configurations
 	// ----------------------------------------------------------------------------------------

@@ -20,7 +20,13 @@ type Config struct {
 
 // Application configuration
 type Application struct {
-	Name string `envconfig:"name"`
+	Name      string `envconfig:"name" default:"api-service"`
+	BuildTime string `envconfig:"build_time"`
+	Version   string `envconfig:"version"`
+	Git       struct {
+		RefName string `envconfig:"ref_name"`
+		RefSHA  string `envconfig:"ref_sha"`
+	} `envconfig:"git"`
 }
 
 // Rest is REST api configuration
