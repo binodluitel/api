@@ -34,10 +34,9 @@ vet: ## Run go vet against code.
 # Image name and tag
 IMG ?= bluitel/api:latest
 
-# If you wish built an image targeting other platforms you can use the --platform flag.
-# i.e. docker build --platform linux/arm64
-# More info: https://docs.docker.com/develop/develop-images/build_enhancements/
-# For multi-arch image build information, see: https://docs.docker.com/build/building/multi-platform/
+# --platform flag is used here to built an image targeting multiple platforms, i.e. linux/arm64,linux/amd64.
+# More info on build enhancements: https://docs.docker.com/develop/develop-images/build_enhancements/
+# And multi-arch image build information, see: https://docs.docker.com/build/building/multi-platform/
 .PHONY: image
 image: ## Build docker image.
 	docker build \
