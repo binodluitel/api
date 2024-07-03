@@ -37,6 +37,7 @@ IMG ?= bluitel/api:latest
 # If you wish built an image targeting other platforms you can use the --platform flag.
 # i.e. docker build --platform linux/arm64
 # More info: https://docs.docker.com/develop/develop-images/build_enhancements/
+# For multi-arch image build information, see: https://docs.docker.com/build/building/multi-platform/
 .PHONY: image
 image: ## Build docker image.
 	docker build \
@@ -47,5 +48,5 @@ image: ## Build docker image.
 		--build-arg GIT_REF_NAME=${GIT_BRANCH} \
 		--build-arg GIT_REF_SHA=${GIT_COMMIT} \
 		--build-arg VERSION=${GIT_TAG} \
-		--platform=linux/arm64 \
+		--platform=linux/arm64,linux/amd64 \
 		-t ${IMG} .
