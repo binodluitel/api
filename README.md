@@ -24,10 +24,10 @@ After installing Pulumi, run the following commands to deploy the application:
 pulumi up --stack dev --config "api:kube-context=kubernetes-admin@kubernetes"
 ```
 
-Use the `--config` flag to specify the Kubernetes context to use for deployment.
+Use the `--config` flag and specify the Kubernetes context to use for deployment.
 
-The `kubernetes-admin@kubernetes` context in the above command deploying the application to the
-Kubernetes cluster running in raspberry pi configured using ansible script
+The `kubernetes-admin@kubernetes` default k8s context which is used in the above command is deploying the
+application to the Kubernetes cluster running in raspberry pi configured using ansible script
 @[binodluitel/rpi-ansible](https://github.com/binodluitel/rpi-ansible).
 
 ### Run using Docker
@@ -46,6 +46,14 @@ docker run bluitel/api:latest
 {"level":"info","ts":1719970919.3356018,"caller":"api/main.go:32","msg":" ----- Welcome to the API service example ----- "}
 {"level":"debug","ts":1719970919.3363056,"caller":"api/main.go:39","msg":"Application build information","name":"api-service","version":"5ce1db0","build_time":"2024-07-02T23:16:14Z","ref_name":"main","ref_sha":"5ce1db0d5d6ab557ed35756f53edba06ebe137fd"}
 [GIN-debug] Listening and serving HTTP on :9090
+```
+
+## Metrics
+
+The application exposes metrics on `/metrics` endpoint. The metrics are exposed in Prometheus format.
+
+```bash
+$ curl -s http://127.0.0.1:9090/metrics
 ```
 
 ## 418 (I'm a teapot)
@@ -68,3 +76,9 @@ $ curl -s -v http://127.0.0.1:8080
 <
 * Connection #0 to host 127.0.0.1 left intact
 ```
+
+## API Endpoints
+
+The application has the following REST API endpoints:
+
+- `GET v1/stream/logs` - Stream logs from the application (currently streams giberish)

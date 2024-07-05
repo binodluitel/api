@@ -10,7 +10,7 @@ const (
 	namespace = "api_example"
 )
 
-// Metrics used throughout the operator for troubleshooting and health indicators.
+// Metrics used throughout the application for troubleshooting and health indicators.
 var (
 	BuildInfo = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{

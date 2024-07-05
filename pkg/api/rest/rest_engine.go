@@ -4,6 +4,7 @@ import (
 	"net"
 	"net/http"
 
+	streamctrl "github.com/binodluitel/api/pkg/api/rest/controllers/stream"
 	"github.com/binodluitel/api/pkg/config"
 	restservice "github.com/binodluitel/api/pkg/service/rest"
 	"github.com/gin-gonic/gin"
@@ -15,7 +16,7 @@ type Rest struct {
 	Engine *gin.Engine
 }
 
-func New(restService *restservice.Rest) (*Rest, error) {
+func New(restSvc *restservice.Rest) (*Rest, error) {
 	cfg := config.MustGet()
 	gin.SetMode(cfg.API.Rest.Mode)
 	engine := gin.New()
@@ -25,13 +26,17 @@ func New(restService *restservice.Rest) (*Rest, error) {
 	)
 
 	// base router group
-	routes := engine.Group("")
+	router := engine.Group("")
 
 	// add middlewares to base routes
-	routes.Use()
+	router.Use()
 
 	// root path to return I AM A TEAPOT response code
-	routes.Any("/", func(c *gin.Context) { c.Status(http.StatusTeapot) })
+	router.Any("/", func(c *gin.Context) { c.Status(http.StatusTeapot) })
+
+	// v1 API router group
+	v1Router := router.Group("v1")
+	streamctrl.New(restSvc.Stream, v1Router)
 
 	return &Rest{engine}, nil
 }

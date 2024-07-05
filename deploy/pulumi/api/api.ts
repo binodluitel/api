@@ -107,7 +107,7 @@ export class API extends pulumi.ComponentResource {
     );
 
     // application ports
-    const operatorPorts: k8s.types.input.core.v1.ContainerPort[] = [
+    const applicationPorts: k8s.types.input.core.v1.ContainerPort[] = [
       {
         containerPort: apiArgs.port,
         name: "rest-api",
@@ -153,7 +153,7 @@ export class API extends pulumi.ComponentResource {
                     apiArgs.imageTag,
                   ),
                   imagePullPolicy: apiArgs.imagePullPolicy,
-                  ports: operatorPorts,
+                  ports: applicationPorts,
                   env: apiArgs.envs,
                   command: apiArgs.command,
                 },
