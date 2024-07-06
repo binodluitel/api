@@ -15,8 +15,9 @@ type Config struct {
 	API         struct {
 		Rest *Rest `envconfig:"rest"`
 	} `envconfig:"api"`
-	Log       Log       `envconfig:"log"`
-	Telemetry Telemetry `envconfig:"telemetry"`
+	Log            Log       `envconfig:"log"`
+	Telemetry      Telemetry `envconfig:"telemetry"`
+	KubeConfigPath string    `envconfig:"kube_config_path" default:"~/.kube/config"`
 }
 
 // Application configuration

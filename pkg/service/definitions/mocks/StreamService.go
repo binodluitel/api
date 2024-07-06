@@ -5,6 +5,8 @@ package mocks
 import (
 	context "context"
 
+	io "io"
+
 	mock "github.com/stretchr/testify/mock"
 
 	models "github.com/binodluitel/api/pkg/models"
@@ -16,23 +18,23 @@ type StreamService struct {
 }
 
 // StreamLogs provides a mock function with given fields: _a0, _a1
-func (_m *StreamService) StreamLogs(_a0 context.Context, _a1 *models.StreamRequest) (*string, error) {
+func (_m *StreamService) StreamLogs(_a0 context.Context, _a1 *models.StreamRequest) (io.ReadCloser, error) {
 	ret := _m.Called(_a0, _a1)
 
 	if len(ret) == 0 {
 		panic("no return value specified for StreamLogs")
 	}
 
-	var r0 *string
+	var r0 io.ReadCloser
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, *models.StreamRequest) (*string, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, *models.StreamRequest) (io.ReadCloser, error)); ok {
 		return rf(_a0, _a1)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, *models.StreamRequest) *string); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, *models.StreamRequest) io.ReadCloser); ok {
 		r0 = rf(_a0, _a1)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*string)
+			r0 = ret.Get(0).(io.ReadCloser)
 		}
 	}
 

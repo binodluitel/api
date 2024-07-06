@@ -53,12 +53,12 @@ func main() {
 	// ----------------------------------------------------------------------------------------
 	// Start REST application
 	group.Go(func() error {
-		return startRestAPIService(ctx)
+		return startRestAPIService(ctx, cfg)
 	})
 
 	// Start metrics server
 	group.Go(func() error {
-		return startMetricsServer(ctx)
+		return startMetricsServer(ctx, cfg)
 	})
 
 	// Wait here
@@ -68,24 +68,23 @@ func main() {
 }
 
 // startRestAPIService starts REST API service
-func startRestAPIService(_ context.Context) error {
-	restService, err := restservice.New()
+func startRestAPIService(_ context.Context, cfg *config.Config) error {
+	restService, err := restservice.New(cfg)
 	if err != nil {
 		return err
 	}
-	restEngine, err := restapi.New(restService)
+	restEngine, err := restapi.New(cfg, restService)
 	if err != nil {
 		return err
 	}
-	if err := restEngine.Run(); err != nil {
+	if err := restEngine.Run(cfg); err != nil {
 		return fmt.Errorf("failed to start REST API service, %s", err)
 	}
 	return nil
 }
 
 // startMetricsServer starts Prometheus metrics service server
-func startMetricsServer(_ context.Context) error {
-	cfg := config.MustGet()
+func startMetricsServer(_ context.Context, cfg *config.Config) error {
 	promHandler := promhttp.Handler()
 	engine := gin.New()
 	engine.GET("/metrics", func(c *gin.Context) {

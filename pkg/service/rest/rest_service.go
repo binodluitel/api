@@ -1,6 +1,9 @@
 package rest
 
 import (
+	"fmt"
+
+	"github.com/binodluitel/api/pkg/config"
 	svcdef "github.com/binodluitel/api/pkg/service/definitions"
 	streamsvc "github.com/binodluitel/api/pkg/service/rest/stream"
 )
@@ -11,8 +14,12 @@ type Rest struct {
 }
 
 // New creates a new rest service instance
-func New() (*Rest, error) {
+func New(cfg *config.Config) (*Rest, error) {
+	streamService, err := streamsvc.New(cfg)
+	if err != nil {
+		return nil, fmt.Errorf("failed initializing stream service: %w", err)
+	}
 	return &Rest{
-		Stream: streamsvc.New(),
+		Stream: streamService,
 	}, nil
 }

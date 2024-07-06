@@ -16,8 +16,7 @@ type Rest struct {
 	Engine *gin.Engine
 }
 
-func New(restSvc *restservice.Rest) (*Rest, error) {
-	cfg := config.MustGet()
+func New(cfg *config.Config, restSvc *restservice.Rest) (*Rest, error) {
 	gin.SetMode(cfg.API.Rest.Mode)
 	engine := gin.New()
 	engine.Use(
@@ -42,8 +41,7 @@ func New(restSvc *restservice.Rest) (*Rest, error) {
 }
 
 // Run starts a new REST listner
-func (r *Rest) Run() error {
-	cfg := config.MustGet()
+func (r *Rest) Run(cfg *config.Config) error {
 	if cfg.API.Rest.TLS.Enable {
 		return r.Engine.RunTLS(
 			net.JoinHostPort(cfg.API.Rest.Host, cfg.API.Rest.Port),

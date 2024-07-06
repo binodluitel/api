@@ -3,6 +3,8 @@
 This is an example of an API service application written in Go.
 The application uses [Gin](https://github.com/gin-gonic/gin/) for the REST API framework.
 
+The application uses [12-factor](https://12factor.net/) app principles and is configured using environment variables.
+
 ## Docker image
 
 The application is available as a Docker image on [Docker Hub](https://hub.docker.com/r/bluitel/api/tags).
@@ -14,9 +16,9 @@ make image
 
 ## Deployment
 
-This application us deployable to Kubernetes cluster using [Pulumi](https://www.pulumi.com/).
-To deploy the application using Pulumi, you need to have [Pulumi installed](https://www.pulumi.com/docs/install/)
-on your machine.
+This application us deployable to Kubernetes cluster using [Pulumi](https://www.pulumi.com/)
+IaaC (Infrastructure as Code). To deploy the application using Pulumi, you need to have
+[Pulumi installed](https://www.pulumi.com/docs/install/) on your machine.
 
 After installing Pulumi, run the following commands to deploy the application:
 
@@ -81,4 +83,21 @@ $ curl -s -v http://127.0.0.1:8080
 
 The application has the following REST API endpoints:
 
-- `GET v1/stream/logs` - Stream logs from the application (currently streams giberish)
+- `GET v1/stream/logs` - Stream logs from the application pod(s)
+
+## Port Forwarding
+
+To access the application running in the Kubernetes cluster, you can use port forwarding
+since there is no Ingress or LoadBalancer configured.
+
+Application API is exposed on port 8080.
+
+```bash
+kubectl port-forward --namespace api svc/api 8080
+```
+
+Application metrics are exposed on port 9090.
+
+```bash
+kubectl port-forward --namespace api svc/api 9090
+```

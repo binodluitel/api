@@ -26,6 +26,8 @@ config:
       value: ""
     - name: "TELEMETRY_METRICS_TLS_SERVER_KEY_PATH"
       value: ""
+    - name: "KUBE_CONFIG_PATH"
+      value: ""
   api:imageName: "api"
   api:imagePullPolicy: "Always"
   api:imageRepository: "bluitel"

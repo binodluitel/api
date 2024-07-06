@@ -41,6 +41,8 @@ const defaultAPIArgs: Partial<APIArgs> = {
 export class API extends pulumi.ComponentResource {
   public readonly apiService: k8s.core.v1.Service;
   public readonly apiDeployment: k8s.apps.v1.Deployment;
+  public readonly clusterRole: k8s.rbac.v1.ClusterRole;
+  public readonly clusterRoleBinding: k8s.rbac.v1.ClusterRoleBinding;
 
   constructor(
     name: string,
@@ -105,6 +107,52 @@ export class API extends pulumi.ComponentResource {
         ...opts,
       },
     );
+
+    this.clusterRole = new k8s.rbac.v1.ClusterRole(
+      `${apiArgs.name}/cluster-role`,
+      {
+        metadata: {
+          name: `${apiArgs.name}-cluster-role`,
+        },
+        rules: [
+          {
+            apiGroups: [""],
+            resources: ["pods", "pods/log"],
+            verbs: ["get", "list", "watch"],
+          },
+        ],
+      },
+      {
+        parent: this,
+        ...opts,
+      },
+    );
+
+    this.clusterRoleBinding = new k8s.rbac.v1.ClusterRoleBinding(
+      `${args.name}/role-binding`,
+      {
+        metadata: {
+          name: `${apiArgs.name}-role-binding`,
+        },
+        roleRef: {
+          apiGroup: "rbac.authorization.k8s.io",
+          kind: "ClusterRole",
+          name: `${apiArgs.name}-cluster-role`,
+        },
+        subjects: [
+          {
+            kind: "ServiceAccount",
+            name: apiArgs.name,
+            namespace: apiArgs.namespace,
+          },
+        ],
+      },
+      {
+        parent: this,
+        ...opts,
+      },
+    );
+
 
     // application ports
     const applicationPorts: k8s.types.input.core.v1.ContainerPort[] = [

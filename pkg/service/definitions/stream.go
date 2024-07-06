@@ -2,6 +2,7 @@ package definitions
 
 import (
 	"context"
+	"io"
 
 	"github.com/binodluitel/api/pkg/models"
 )
@@ -10,5 +11,5 @@ import (
 
 // StreamService defines a methods for stream service
 type StreamService interface {
-	StreamLogs(context.Context, *models.StreamRequest) (*string, error)
+	StreamLogs(context.Context, *models.StreamRequest) (io.ReadCloser, error)
 }

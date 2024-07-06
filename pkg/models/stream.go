@@ -1,14 +1,9 @@
 package models
 
-import (
-	"time"
-)
-
 // StreamRequest is request model for streaming
 type StreamRequest struct {
-	ID     string    `json:"id"`
-	Follow bool      `json:"follow"`
-	Tail   int       `json:"tail"`
-	Limit  int64     `json:"limit"`
-	Since  time.Time `json:"since"`
+	Follow       bool   `json:"follow"`
+	SinceSeconds *int64 `json:"since_seconds"`
+	Container    string `json:"container"`
+	Namespace    string `json:"namespace"`
 }
