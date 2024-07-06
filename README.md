@@ -3,7 +3,7 @@
 This is an example of an API service application written in Go.
 The application uses [Gin](https://github.com/gin-gonic/gin/) for the REST API framework.
 
-The application uses [12-factor](https://12factor.net/) app principles and is configured using environment variables.
+The application designed keeping in mind the [12-factor](https://12factor.net/) app principles.
 
 ## Docker image
 
@@ -88,7 +88,7 @@ The application has the following REST API endpoints:
 ## Port Forwarding
 
 To access the application running in the Kubernetes cluster, you can use port forwarding
-since there is no Ingress or LoadBalancer configured.
+since/if there is no Ingress or LoadBalancer configured.
 
 Application API is exposed on port 8080.
 
