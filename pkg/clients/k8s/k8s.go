@@ -27,7 +27,7 @@ func kubeConfig(cfg *config.Config) (*rest.Config, error) {
 	if kubeConfigPath != "" && strings.HasPrefix(kubeConfigPath, "~/") {
 		home, err := homedir.Dir()
 		if err != nil {
-			return nil, fmt.Errorf("failed to get kube config from path %q: %w", kubeConfigPath, err)
+			return nil, fmt.Errorf("failed to determine home directory from k8s config path %q: %w", kubeConfigPath, err)
 		}
 		kubeConfigPath = filepath.Join(home, kubeConfigPath[2:])
 	}
