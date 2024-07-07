@@ -4,7 +4,8 @@ import (
 	"net"
 	"net/http"
 
-	streamctrl "github.com/binodluitel/api/pkg/api/rest/controllers/stream"
+	podsctrl "github.com/binodluitel/api/pkg/api/rest/controllers/pods"
+	usersctrl "github.com/binodluitel/api/pkg/api/rest/controllers/users"
 	"github.com/binodluitel/api/pkg/config"
 	restservice "github.com/binodluitel/api/pkg/service/rest"
 	"github.com/gin-gonic/gin"
@@ -16,7 +17,7 @@ type Rest struct {
 	Engine *gin.Engine
 }
 
-func New(cfg *config.Config, restSvc *restservice.Rest) (*Rest, error) {
+func New(cfg *config.Config, rest *restservice.Rest) (*Rest, error) {
 	gin.SetMode(cfg.API.Rest.Mode)
 	engine := gin.New()
 	engine.Use(
@@ -35,8 +36,8 @@ func New(cfg *config.Config, restSvc *restservice.Rest) (*Rest, error) {
 
 	// v1 API router group
 	v1Router := router.Group("v1")
-	streamctrl.New(restSvc.Stream, v1Router)
-
+	podsctrl.New(rest.Pods, v1Router)
+	usersctrl.New(rest.Users, v1Router)
 	return &Rest{engine}, nil
 }
 

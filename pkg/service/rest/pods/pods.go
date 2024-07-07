@@ -1,4 +1,4 @@
-package stream
+package pods
 
 import (
 	"fmt"
@@ -9,16 +9,16 @@ import (
 	"k8s.io/client-go/kubernetes"
 )
 
-// Stream defines streaming service instance
-type Stream struct {
+// Pods defines service instance for k8s pods
+type Pods struct {
 	k8sClient *kubernetes.Clientset
 }
 
 // New creates and returns a new user service instance
-func New(cfg *config.Config) (svcdef.StreamService, error) {
+func New(cfg *config.Config) (svcdef.PodsService, error) {
 	k8sClient, err := k8s.New(cfg)
 	if err != nil {
 		return nil, fmt.Errorf("failed initializing k8s client: %w", err)
 	}
-	return &Stream{k8sClient: k8sClient}, nil
+	return &Pods{k8sClient: k8sClient}, nil
 }

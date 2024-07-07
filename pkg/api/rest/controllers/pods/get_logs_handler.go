@@ -1,4 +1,4 @@
-package stream
+package pods
 
 import (
 	"bufio"
@@ -11,25 +11,26 @@ import (
 	"time"
 
 	"github.com/binodluitel/api/pkg/log"
-	"github.com/binodluitel/api/pkg/models"
+	"github.com/binodluitel/api/pkg/models/pods"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"k8s.io/utils/ptr"
 )
 
-func (c *Controller) StreamLogs(ctx *gin.Context) {
+func (c *Controller) GetLogs(ctx *gin.Context) {
 	_, logger := log.Get(ctx)
 	defer logger.Sync()
-	logger.Info("streaming logs")
+	logger.Info("Getting pod logs")
 	ctx.Stream(func(w io.Writer) bool {
-		request := new(models.StreamRequest)
+		request := new(pods.Logs)
+		request.PodName = ctx.Param("pod_name")
 		c.setRequestDefaults(ctx, request)
 		for {
 			select {
 			case <-ctx.Done():
 				return false
 			default:
-				logs, err := c.service.StreamLogs(ctx, request)
+				logs, err := c.service.GetLogs(ctx, request)
 				if err != nil {
 					ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 					return false
@@ -40,7 +41,7 @@ func (c *Controller) StreamLogs(ctx *gin.Context) {
 					if netErr, ok := err.(*net.OpError); ok && netErr.Err.Error() == "write: broken pipe" {
 						return false
 					}
-					logger.Error("error streaming logs", zap.Error(err))
+					logger.Error("error getting pod logs", zap.Error(err))
 					return false
 				}
 				if !request.Follow {
@@ -67,9 +68,9 @@ func (c *Controller) StreamLogs(ctx *gin.Context) {
 	})
 }
 
-func (c *Controller) setRequestDefaults(ctx *gin.Context, request *models.StreamRequest) {
+func (c *Controller) setRequestDefaults(ctx *gin.Context, request *pods.Logs) {
 	if request == nil {
-		request = new(models.StreamRequest)
+		request = new(pods.Logs)
 	}
 	request.Follow = ctx.Query("follow") == "true"
 	if sinceSeconds := ctx.Query("since_seconds"); sinceSeconds != "" {
