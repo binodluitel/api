@@ -83,7 +83,7 @@ $ curl -s -v http://127.0.0.1:8080
 
 The application has the following REST API endpoints:
 
-- `GET v1/pods/:pod_name/logs` - Gets or stream logs from the k8s pod(s)
+- `GET v1/pods/:pod_name/logs?follow=false` - Gets or stream (set `follow=true`) logs from the k8s pod(s)
 - `GET/POST/PATCH/DELETE v1/users` - CRUD operations for users are placeholders and does not have any implementation yet
 
 ## Port Forwarding
