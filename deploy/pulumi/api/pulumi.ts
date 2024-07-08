@@ -24,9 +24,9 @@ const namespace = new k8s.core.v1.Namespace(
 
 const appName = config.get("name") ?? "api";
 
-const serviceAccount = new k8s.core.v1.ServiceAccount("api", {
+const serviceAccount = new k8s.core.v1.ServiceAccount(`${appName}-service-account`, {
   metadata: {
-    name: "api",
+    name: appName,
     namespace: namespace.metadata.name,
   },
 });
@@ -46,5 +46,5 @@ const apiArgs = {
 // Deploy API service.
 export const apiApp = new api.API(appName, apiArgs, {
   provider: kubeProvider,
-  dependsOn: [namespace],
+  dependsOn: [namespace, serviceAccount],
 });
