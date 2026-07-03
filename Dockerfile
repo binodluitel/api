@@ -65,5 +65,7 @@ ENV APP_BUILD_TIME=${BUILD_TIME}
 ENV APP_VERSION=${VERSION}
 ENV APP_GIT_REF_NAME=${GIT_REF_NAME}
 ENV APP_GIT_REF_SHA=${GIT_REF_SHA}
+# APP_GRACEFUL_SHUTDOWN_TIMEOUT_SEC can be set at runtime to configure graceful shutdown timeout (default: 30 seconds)
+# Example: docker run -e APP_GRACEFUL_SHUTDOWN_TIMEOUT_SEC=60 <image>
 
 ENTRYPOINT [ "/bin/api" ]

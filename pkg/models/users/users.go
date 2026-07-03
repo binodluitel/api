@@ -7,6 +7,7 @@ import (
 
 // User Statuses
 const (
+	// UserStatusPending indicates that the user is pending approval or activation
 	UserStatusPending = "pending"
 )
 

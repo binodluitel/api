@@ -6,6 +6,7 @@ import (
 
 // Account Statuses
 const (
+	// AccountStatusPending indicates that the account is pending approval or activation.
 	AccountStatusPending = "pending"
 )
 

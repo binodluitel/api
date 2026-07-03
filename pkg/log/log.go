@@ -104,7 +104,7 @@ func (l Logger) Sync() {
 	if l.trace.span != nil {
 		l.trace.span.End()
 	}
-	l.Logger.Sync()
+	_ = l.Logger.Sync()
 }
 
 // With returns a new logger with additional fields

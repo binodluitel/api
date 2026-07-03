@@ -29,12 +29,13 @@ type Application struct {
 		RefName string `envconfig:"ref_name"`
 		RefSHA  string `envconfig:"ref_sha"`
 	} `envconfig:"git"`
+	GracefulShutdownTimeout int `envconfig:"graceful_shutdown_timeout_sec" default:"30"`
 }
 
-// Log is configuration information for application language
+// Log is configuration information for application logging
 type Log struct {
-	Level       string `envconfig:"level" default:"debug"`
-	Development bool   `envconfig:"development" default:"true"`
+	Level       string `envconfig:"level" default:"info"`
+	Development bool   `envconfig:"development" default:"false"`
 	Encoding    string `envconfig:"encoding" default:"json"`
 	TracerName  string `envconfig:"tracer_name" default:"unknown-log-tracer"`
 }
@@ -42,7 +43,7 @@ type Log struct {
 // Rest is REST api configuration
 type Rest struct {
 	Host string `envconfig:"host" default:""`
-	Mode string `envconfig:"mode" default:"debug"`
+	Mode string `envconfig:"mode" default:"release"`
 	Port string `envconfig:"port" default:"8080"`
 	TLS  struct {
 		Enable bool `envconfig:"enable" default:"false"`

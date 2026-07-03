@@ -12,6 +12,7 @@ const (
 
 // Metrics used throughout the application for troubleshooting and health indicators.
 var (
+	// BuildInfo provides information about the application build
 	BuildInfo = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
 			Namespace: namespace,

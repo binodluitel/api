@@ -13,11 +13,11 @@ import (
 )
 
 func New(cfg *config.Config) (*kubernetes.Clientset, error) {
-	config, err := kubeConfig(cfg)
+	c, err := kubeConfig(cfg)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get kubernetes config: %w", err)
 	}
-	return kubernetes.NewForConfig(config)
+	return kubernetes.NewForConfig(c)
 }
 
 // kubeConfig returns a Kubernetes client configuration based on kubeconfig path or
