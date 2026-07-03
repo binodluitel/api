@@ -203,6 +203,26 @@ export class API extends pulumi.ComponentResource {
                   ports: applicationPorts,
                   env: apiArgs.envs,
                   command: apiArgs.command,
+                  livenessProbe: {
+                    httpGet: {
+                      path: "/healthz",
+                      port: apiArgs.port,
+                    },
+                    initialDelaySeconds: 10,
+                    periodSeconds: 10,
+                    timeoutSeconds: 2,
+                    failureThreshold: 3,
+                  },
+                  readinessProbe: {
+                    httpGet: {
+                      path: "/readyz",
+                      port: apiArgs.port,
+                    },
+                    initialDelaySeconds: 5,
+                    periodSeconds: 10,
+                    timeoutSeconds: 2,
+                    failureThreshold: 3,
+                  },
                 },
               ],
             },

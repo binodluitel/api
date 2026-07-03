@@ -3,7 +3,6 @@ package rest
 import (
 	"context"
 	"errors"
-	"fmt"
 	"net"
 	"net/http"
 	"time"
@@ -22,8 +21,7 @@ import (
 
 // Rest defines a REST application
 type Rest struct {
-	Engine     *gin.Engine
-	readyCheck func(context.Context) error
+	Engine *gin.Engine
 }
 
 func New(cfg *config.Config, rest *restservice.Rest) (*Rest, error) {
@@ -51,13 +49,7 @@ func New(cfg *config.Config, rest *restservice.Rest) (*Rest, error) {
 	// Health check endpoints for Kubernetes
 	livenessctrl.New(router)
 	readinessctrl.New(rest.Pods, router)
-	var readyCheck func(context.Context) error
-	if checker, ok := rest.Pods.(interface{ Ready(context.Context) error }); ok {
-		readyCheck = checker.Ready
-	} else {
-		return nil, fmt.Errorf("pods service does not support readiness checks")
-	}
-	return &Rest{Engine: engine, readyCheck: readyCheck}, nil
+	return &Rest{Engine: engine}, nil
 }
 
 // Run starts REST server and handles graceful shutdown
