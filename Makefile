@@ -50,22 +50,33 @@ build: generate fmt vet ## Build application binary.
 
 # Image name and tag
 IMG ?= bluitel/api:latest
+PLATFORMS ?=
+PUSH ?= false
+comma := ,
 
-# --platform flag is used here to built an image targeting multiple platforms, i.e. linux/arm64,linux/amd64.
-# More info on build enhancements: https://docs.docker.com/develop/develop-images/build_enhancements/
-# And multi-arch image build information, see: https://docs.docker.com/build/building/multi-platform/
+IMAGE_BUILD_CMD = docker buildx build --no-cache \
+	--build-arg APP_NAME=${APP_NAME} \
+	--ssh default \
+	--build-arg BUILD_TIME=${BUILD_TIME} \
+	--build-arg GIT_REF_NAME=${GIT_BRANCH} \
+	--build-arg GIT_REF_SHA=${GIT_COMMIT} \
+	--build-arg VERSION=${GIT_TAG}
+
+IMAGE_OUTPUT_FLAG := --load
+ifneq ($(strip $(PLATFORMS)),)
+IMAGE_BUILD_CMD += --platform=$(PLATFORMS)
+ifneq ($(findstring $(comma),$(PLATFORMS)),)
+IMAGE_OUTPUT_FLAG := --push
+else ifeq ($(PUSH),true)
+IMAGE_OUTPUT_FLAG := --push
+endif
+else ifeq ($(PUSH),true)
+IMAGE_OUTPUT_FLAG := --push
+endif
+
 .PHONY: image
 image: ## Build docker image.
-	docker build \
-		--no-cache \
-		--build-arg APP_NAME=${APP_NAME} \
-		--ssh default \
-		--build-arg BUILD_TIME=${BUILD_TIME} \
-		--build-arg GIT_REF_NAME=${GIT_BRANCH} \
-		--build-arg GIT_REF_SHA=${GIT_COMMIT} \
-		--build-arg VERSION=${GIT_TAG} \
-		--platform=linux/arm64,linux/amd64 \
-		-t ${IMG} .
+	$(IMAGE_BUILD_CMD) $(IMAGE_OUTPUT_FLAG) -t ${IMG} .
 
 ##@ Build Dependencies
 

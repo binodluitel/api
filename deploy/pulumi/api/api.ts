@@ -153,7 +153,6 @@ export class API extends pulumi.ComponentResource {
       },
     );
 
-
     // application ports
     const applicationPorts: k8s.types.input.core.v1.ContainerPort[] = [
       {

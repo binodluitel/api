@@ -24,12 +24,15 @@ const namespace = new k8s.core.v1.Namespace(
 
 const appName = config.get("name") ?? "api";
 
-const serviceAccount = new k8s.core.v1.ServiceAccount(`${appName}-service-account`, {
-  metadata: {
-    name: appName,
-    namespace: namespace.metadata.name,
+const serviceAccount = new k8s.core.v1.ServiceAccount(
+  `${appName}-service-account`,
+  {
+    metadata: {
+      name: appName,
+      namespace: namespace.metadata.name,
+    },
   },
-});
+);
 
 const apiArgs = {
   envs: config.getObject<k8s.types.input.core.v1.EnvVar[]>("envs") ?? [],

@@ -41,7 +41,7 @@ func New(cfg *config.Config, rest *restservice.Rest) (*Rest, error) {
 	return &Rest{engine}, nil
 }
 
-// Run starts a new REST listner
+// Run starts a new REST listener
 func (r *Rest) Run(cfg *config.Config) error {
 	if cfg.API.Rest.TLS.Enable {
 		return r.Engine.RunTLS(

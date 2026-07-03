@@ -3,15 +3,21 @@
 This is an example of an API service application written in Go.
 The application uses [Gin](https://github.com/gin-gonic/gin/) for the REST API framework.
 
-The application designed keeping in mind the [12-factor](https://12factor.net/) app principles.
+The application is designed keeping in mind the [12-factor](https://12factor.net/) app principles.
 
 ## Docker image
 
 The application is available as a Docker image on [Docker Hub](https://hub.docker.com/r/bluitel/api/tags).
-To build one locally, clone the repository and run make command:
+To build one locally for your current platform, clone the repository and run:
 
 ```bash
 make image
+```
+
+To build and push a multi-architecture image, override the variables:
+
+```bash
+make image PLATFORMS=linux/arm64,linux/amd64 PUSH=true
 ```
 
 ## Deployment
@@ -24,6 +30,20 @@ After installing Pulumi, run the following commands to deploy the application:
 
 ```bash
 pulumi up --stack dev --config "api:kube-context=kubernetes-admin@kubernetes"
+```
+
+To remove the deployment, run:
+
+```bash
+pulumi destroy
+```
+
+To remove stack and all resources created by it, run:
+
+(**Note**: This is forcing the removal of the stack and all resources created by it, use with caution)
+
+```bash
+pulumi stack rm --force
 ```
 
 Use the `--config` flag and specify the Kubernetes context to use for deployment.
@@ -83,8 +103,11 @@ $ curl -s -v http://127.0.0.1:8080
 
 The application has the following REST API endpoints:
 
-- `GET v1/pods/:pod_name/logs?follow=false` - Gets or stream (set `follow=true`) logs from the k8s pod(s)
-- `GET/POST/PATCH/DELETE v1/users` - CRUD operations for users are placeholders and does not have any implementation yet
+- `GET v1/pods/:pod_name/logs?follow=false` - Get or stream (set `follow=true`) logs from the k8s pod(s)
+  - Or run with the query parameter to specify container and namespace to get logs from specific container
+    in a pod in a namespace
+  - `GET v1/pods/:pod_name/logs?follow=true&container=container_name&namespace=namespace_name`
+- `GET/POST/PATCH/DELETE v1/users` - CRUD operations for users are placeholders and does not have any implementation
 
 ## Port Forwarding
 

@@ -32,7 +32,7 @@ config:
   api:imagePullPolicy: "Always"
   api:imageRepository: "bluitel"
   api:imageTag: "latest"
-  api:kube-context: kubernetes-admin@kubernetes
+  api:kube-context: kind-test-infra
   api:name: api
   api:namespace: api
   api:replicas: "3"
