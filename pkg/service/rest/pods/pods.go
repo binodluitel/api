@@ -1,6 +1,7 @@
 package pods
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/binodluitel/api/pkg/clients/k8s"
@@ -21,4 +22,13 @@ func New(cfg *config.Config) (svcdef.PodsService, error) {
 		return nil, fmt.Errorf("failed initializing k8s client: %w", err)
 	}
 	return &Pods{k8sClient: k8sClient}, nil
+}
+
+// Ready checks whether the Kubernetes API is reachable and the client is usable.
+func (p *Pods) Ready(ctx context.Context) error {
+	_, err := p.k8sClient.Discovery().ServerVersion()
+	if err != nil {
+		return fmt.Errorf("failed probing kubernetes api server: %w", err)
+	}
+	return nil
 }

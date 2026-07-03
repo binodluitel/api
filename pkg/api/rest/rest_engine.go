@@ -3,11 +3,14 @@ package rest
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net"
 	"net/http"
 	"time"
 
+	livenessctrl "github.com/binodluitel/api/pkg/api/rest/controllers/liveness"
 	podsctrl "github.com/binodluitel/api/pkg/api/rest/controllers/pods"
+	readinessctrl "github.com/binodluitel/api/pkg/api/rest/controllers/readiness"
 	usersctrl "github.com/binodluitel/api/pkg/api/rest/controllers/users"
 	"github.com/binodluitel/api/pkg/config"
 	"github.com/binodluitel/api/pkg/log"
@@ -19,8 +22,8 @@ import (
 
 // Rest defines a REST application
 type Rest struct {
-	Engine *gin.Engine
-	ready  bool
+	Engine     *gin.Engine
+	readyCheck func(context.Context) error
 }
 
 func New(cfg *config.Config, rest *restservice.Rest) (*Rest, error) {
@@ -40,20 +43,21 @@ func New(cfg *config.Config, rest *restservice.Rest) (*Rest, error) {
 	// root path to return I AM A TEAPOT response code
 	router.Any("/", func(c *gin.Context) { c.Status(http.StatusTeapot) })
 
-	// Health check endpoints for Kubernetes
-	router.GET("/healthz", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"status": "alive"})
-	})
-
-	router.GET("/readyz", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"ready": true})
-	})
-
 	// v1 API router group
 	v1Router := router.Group("v1")
 	podsctrl.New(rest.Pods, v1Router)
 	usersctrl.New(rest.Users, v1Router)
-	return &Rest{Engine: engine, ready: true}, nil
+
+	// Health check endpoints for Kubernetes
+	livenessctrl.New(router)
+	readinessctrl.New(rest.Pods, router)
+	var readyCheck func(context.Context) error
+	if checker, ok := rest.Pods.(interface{ Ready(context.Context) error }); ok {
+		readyCheck = checker.Ready
+	} else {
+		return nil, fmt.Errorf("pods service does not support readiness checks")
+	}
+	return &Rest{Engine: engine, readyCheck: readyCheck}, nil
 }
 
 // Run starts REST server and handles graceful shutdown
